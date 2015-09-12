@@ -17,27 +17,41 @@ public class Answer {
 
 
     public static int answer(int[][] meetings) {
-
         // Your code goes here.
         List<Interval> intervalList = new ArrayList<Interval>();
 
         for(int i=0; i < meetings.length; i++){
-            intervalList.add(new Interval(i, meetings[i][0], meetings[i][1]));
+            intervalList.add(new Interval(meetings[i][0], meetings[i][1]));
         }
 
-        IntervalNode head = new IntervalNode(intervalList);
+        Collections.sort(intervalList, new Comparator<Interval>() {
+            public int compare(Interval i1, Interval i2) {
+                if (i1.size() == i2.size()) {
+                    return 0;
+                } else if (i1.size() > i2.size()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
 
-        int max = 0;
-        //10 build a map of ids to collisions
-        for (Interval interval : intervalList) {
-            max = Math.max(head.query(interval).size(), max);
-        }
-
-        return 1 + intervalList.size() - max;
+        return maxMeetings(intervalList, 1);
     }
 
+    private static int maxMeetings(List<Interval> intervalList, int count){
+        IntervalNode head = new IntervalNode(intervalList);
+        Interval intervalWithLeastCollisions = intervalList.get(0);
+        List<Interval> collisions = head.query(intervalWithLeastCollisions);
+        intervalList.removeAll(collisions);
 
-
+        if(intervalList.isEmpty()){
+            return count;
+        }
+        else {
+            return maxMeetings(intervalList, ++count);
+        }
+    }
 }
 
 
@@ -111,6 +125,7 @@ public class Answer {
         return result;
     }
 
+
     private Integer getMedian(SortedSet<Integer> set) {
         int i = 0;
         int middle = set.size() / 2;
@@ -125,18 +140,16 @@ public class Answer {
 
 
  class Interval implements Comparable<Interval>{
-
     private int start;
     private int end;
-    private int id;
-    public Interval(int id, int start, int end) {
+
+    public Interval(int start, int end) {
         this.start = start;
         this.end = end;
-        this.id = id;
     }
 
-    public int getId() {
-        return id;
+    public int size(){
+        return end - start;
     }
     public int getStart() {
         return start;
