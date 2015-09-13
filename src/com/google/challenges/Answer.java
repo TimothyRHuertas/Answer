@@ -7,12 +7,19 @@ import java.util.*;
 //i took what i needed from here
 //https://github.com/kevinjdolan/intervaltree
 public class Answer {
+    public static void main(String[] args) {
+        int[][] meetings4 = {{0, 1}, {1, 2}, {2, 3}, {3, 5}, {4, 5}};
+        int[][] meetings1 = {{0, 1000000}, {42, 43}, {0, 1000000}, {42, 43}};
+        System.out.println(answer(meetings4));
+        System.out.println(answer(meetings1));
+    }
+    
     public static int answer(int[][] meetings) {
-        // Your code goes here.
+        // my code goes here.
         List<Interval> intervalList = new ArrayList<Interval>();
 
-        for (int i = 0; i < meetings.length; i++) {
-            intervalList.add(new Interval(meetings[i][0], meetings[i][1]));
+        for (int[] meeting : meetings) {
+            intervalList.add(new Interval(meeting[0], meeting[1]));
         }
 
 
